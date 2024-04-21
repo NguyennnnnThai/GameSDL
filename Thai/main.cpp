@@ -880,35 +880,35 @@ void pressPauseGame(SDL_Renderer* renderer)
 //    }
 //}
 void showCharacterSelectionMenu() {
-    ship1_rect.x = 100;
-    ship1_rect.y = 100;
+    ship1_rect.x = 150;
+    ship1_rect.y = 180;
     ship1_rect.w = 100;
     ship1_rect.h = 100;
 
-    ship2_rect.x = 200;
-    ship2_rect.y = 100;
+    ship2_rect.x = 400;
+    ship2_rect.y = 180;
     ship2_rect.w = 100;
     ship2_rect.h = 100;
 
-    ship3_rect.x = 100;
-    ship3_rect.y = 200;
+    ship3_rect.x = 630;
+    ship3_rect.y = 180;
     ship3_rect.w = 100;
     ship3_rect.h = 100;
 
-    ship4_rect.x = 200;
-    ship4_rect.y = 200;
+    ship4_rect.x = 275;
+    ship4_rect.y = 320;
     ship4_rect.w = 100;
     ship4_rect.h = 100;
 
-    ship5_rect.x = 500;
-    ship5_rect.y = 500;
+    ship5_rect.x = 515;
+    ship5_rect.y = 320;
     ship5_rect.w = 100;
     ship5_rect.h = 100;
 
-    khungoption_rect.x = 100;
-    khungoption_rect.y = 100;
-    khungoption_rect.w = 800;
-    khungoption_rect.h = 300;
+    khungoption_rect.x = 25;
+    khungoption_rect.y = 5;
+    khungoption_rect.w = 850;
+    khungoption_rect.h = 600;
 
     SDL_RenderCopy(renderer, khungoption, NULL, &khungoption_rect);
     SDL_RenderCopy(renderer, ship1, NULL, &ship1_rect);
