@@ -20,6 +20,7 @@ bool levelCompleted = false;
 bool gamePaused = false;
 bool gameOver = false;
 bool aboutbutton = false;
+int selectedCharacterIndex = 0;
 
 SDL_Renderer* renderer = NULL;
 SDL_Window* window = NULL;
@@ -40,7 +41,11 @@ SDL_Texture* bossgame = NULL;
 SDL_Texture* greenbullet = NULL;
 SDL_Texture* bkgrover = NULL;
 SDL_Texture* pauseG = NULL;
-
+SDL_Texture* ship1 = NULL;
+SDL_Texture* ship2 = NULL;
+SDL_Texture* ship3 = NULL;
+SDL_Texture* ship4 = NULL;
+SDL_Texture* ship5 = NULL;
 
 SDL_Rect characterRect = { 0, 0, 100, 150 };
 SDL_Rect mainMenu_rect;
@@ -59,7 +64,7 @@ int traitim = 3;
 SDL_Rect healthRect = { 10, 10, 100, 30 }; 
 
 vector<pair<int, int>> toadodan;
-
+vector<SDL_Texture*> characterTextures;
 
 struct ThreatObject {
     int x, y;
@@ -135,6 +140,11 @@ int main(int argc, char* args[]) {
     SDL_Surface* greenbulletSurface = IMG_Load("enemybullet.png");
     SDL_Surface* bkgroverSurface = IMG_Load("bkgrgover.jpg");
     SDL_Surface* pauseGSurface = IMG_Load("d2t3.jpg");
+    SDL_Surface* ship1S = IMG_Load("ship1.png");
+    SDL_Surface* ship2S = IMG_Load("ship2.png");
+    SDL_Surface* ship3S = IMG_Load("ship3.png");
+    SDL_Surface* ship4S = IMG_Load("ship4.png");
+    SDL_Surface* ship5S = IMG_Load("ship5.png");
 
     backgroundSurface = IMG_Load("background.jpg");
     
@@ -150,6 +160,11 @@ int main(int argc, char* args[]) {
     greenbullet = SDL_CreateTextureFromSurface(renderer, greenbulletSurface);
     bkgrover = SDL_CreateTextureFromSurface(renderer, bkgroverSurface);
     pauseG = SDL_CreateTextureFromSurface(renderer, pauseGSurface);
+    ship1 = SDL_CreateTextureFromSurface(renderer, ship1S);
+    ship2 = SDL_CreateTextureFromSurface(renderer, ship2S);
+    ship3 = SDL_CreateTextureFromSurface(renderer, ship3S);
+    ship4 = SDL_CreateTextureFromSurface(renderer, ship4S);
+    ship5 = SDL_CreateTextureFromSurface(renderer, ship5S);
 
     font = TTF_OpenFont("Jersey25-Regular.ttf", 28);
     SDL_FreeSurface(explosionSurface);
