@@ -7,10 +7,11 @@ Trái đất đang phải đối mặt với nguy cơ bị xâm lược từ lũ
 Bạn có thể xem video tại link : https://youtu.be/W_Rq8dIWRBE
 # Một số hình ảnh trong game
 ## Main menu
-![](menu.png)
+![](mainmenuper.png)
 ## Màn chơi
 ![](gameplay.png)
-![](back.png)
+![](overper.png)
+![](endper.png)
 # Các kĩ thuật sử dụng
 - In ảnh
 - Phát âm thanh
