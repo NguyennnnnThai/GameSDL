@@ -5,6 +5,9 @@
 Trái đất đang phải đối mặt với nguy cơ bị xâm lược từ lũ ngoài hành tinh xấu xa, hãy đứng lên chiến đấu và bảo vệ tương lai của chúng ta!!!
 # Video game
 Bạn có thể xem video tại link : https://youtu.be/mrR-9vuy9GY
+# Cách chơi
+- Sử dụng chuột, nhấn click để bắn đạn
+- Sử dụng các phím số từ 1 đến 5 để lựa chọn tàu chiến mong muốn, nếu không bấm thì lựa chọn tàu chiến sẽ là mặc định 
 # Một số hình ảnh trong game
 ## Main menu
 ![](mainmenuper.png)
