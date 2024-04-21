@@ -13,12 +13,14 @@
 using namespace std;
 
 
+
 bool inMainMenu = true;
 clock_t lastShootTime = clock();
 bool quit = false;
 bool levelCompleted = false; 
 bool gamePaused = false;
-bool gameOver = false;
+bool gameOver1 = false;
+bool gameOver2 = false;
 bool aboutbutton = false;
 int selectedCharacter = -1;
 int selectedCharacterIndex = 0;
@@ -50,6 +52,7 @@ SDL_Texture* ship4 = NULL;
 SDL_Texture* ship5 = NULL;          
 SDL_Texture* option = NULL;
 SDL_Texture* khungoption = NULL;
+SDL_Texture* tickk = NULL;
 
 SDL_Rect characterRect = { 0, 0, 100, 100 };
 SDL_Rect mainMenu_rect;
@@ -122,6 +125,7 @@ void gameover();
 void endinggame(SDL_Renderer* renderer);
 void soundEffect();
 void gameoverover();
+void gameoveroverover();
 void gameabout1();
 void gameabout2();
 void overEndingGame(SDL_Renderer* renderer);
@@ -157,6 +161,7 @@ int main(int argc, char* args[]) {
     SDL_Surface* ship5S = IMG_Load("ship5.png");
     SDL_Surface* optionS = IMG_Load("option.png");
     SDL_Surface* khungoptionS = IMG_Load("khungoption.png");
+    SDL_Surface* tickkS = IMG_Load("tick.png");
     backgroundSurface = IMG_Load("background.jpg");
     
     bullet = SDL_CreateTextureFromSurface(renderer, imagebullet);   
@@ -178,6 +183,7 @@ int main(int argc, char* args[]) {
     ship5 = SDL_CreateTextureFromSurface(renderer, ship5S);
     option = SDL_CreateTextureFromSurface(renderer, optionS);
     khungoption = SDL_CreateTextureFromSurface(renderer, khungoptionS);
+    tickk = SDL_CreateTextureFromSurface(renderer, tickkS);
 
     font = TTF_OpenFont("Jersey25-Regular.ttf", 28);
     SDL_FreeSurface(explosionSurface);
@@ -294,7 +300,7 @@ int main(int argc, char* args[]) {
             }
 
             else {
-
+                handleCharacterSelectionEvent(e);
                 inbackground();
                 drawHealth();
                 innhanvat(mouseX, mouseY);
@@ -316,18 +322,35 @@ int main(int argc, char* args[]) {
                 if (level > 6)
                 {
                     endinggame(renderer);
-                    gameover();
-
+                    gameoveroverover();
+                    SDL_ShowCursor(SDL_ENABLE);
                 }
                 if (trungdan == 3) {
                     SDL_RenderClear(renderer);
                     overEndingGame(renderer);
                     gameover();
                     gameoverover();
-
-                    SDL_Delay(200);
-
+                    gameOver1 = true;
+                    inMainMenu = true;
+                    SDL_ShowCursor(SDL_ENABLE);
+                //    if (e.type == SDL_KEYDOWN)
+                //    {
+                //        if (e.key.keysym.sym == SDLK_a) {
+                //            /*gameOver2 = true;*/
+                //            inMainMenu = true;
+                //            SDL_ShowCursor(SDL_ENABLE);
+                //        }
+                //    }
+                //    else {
+                //        quit = true;
+                //    }
                 }
+                /*if (gameOver1 && gameOver2)
+                {
+                    inMainMenu = true;
+                    SDL_ShowCursor(SDL_ENABLE);
+                }*/
+                
             }
 
             SDL_RenderPresent(renderer);
@@ -344,7 +367,8 @@ int main(int argc, char* args[]) {
     Mix_FreeMusic(backgroundMusic);
     Mix_CloseAudio();
 
-
+    SDL_DestroyRenderer(renderer); // Hủy bỏ renderer
+    SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;
 }
@@ -381,6 +405,33 @@ void innhanvat(int x, int y) {
             SDL_RenderCopy(renderer, ship5, NULL, &characterRect);
         }
         
+        //if (e.type == SDL_KEYDOWN) {
+        //    if (e.key.keysym.sym == SDLK_1)
+        //    {
+        //        //selectedCharacter == 1;
+        //        SDL_RenderCopy(renderer, ship1, NULL, &characterRect);
+        //    }
+        //    else if (e.key.keysym.sym == SDLK_2)
+        //    {
+        //        //selectedCharacter == 2;
+        //        SDL_RenderCopy(renderer, ship2, NULL, &characterRect);
+        //    }
+        //    else if (e.key.keysym.sym == SDLK_3)
+        //    {
+        //        //selectedCharacter == 3;
+        //        SDL_RenderCopy(renderer, ship3, NULL, &characterRect);
+        //    }
+        //    else if (e.key.keysym.sym == SDLK_4)
+        //    {
+        //        //selectedCharacter == 4;
+        //        SDL_RenderCopy(renderer, ship4, NULL, &characterRect);
+        //    }
+        //    else if (e.key.keysym.sym == SDLK_5)
+        //    {
+        //        //selectedCharacter == 5;
+        //        SDL_RenderCopy(renderer, ship5, NULL, &characterRect);
+        //    }
+        //}
     }
 }
 
@@ -810,7 +861,20 @@ void gameoverover()
     SDL_FreeSurface(over);
     SDL_DestroyTexture(gover);
 }
+void gameoveroverover()
+{
 
+    SDL_Surface* over = TTF_RenderText_Solid(font, "YOU WIN", color);
+    SDL_Texture* gover = SDL_CreateTextureFromSurface(renderer, over);
+
+    int* x = new int(300);
+    int* y = new int(300);
+    SDL_QueryTexture(gover, NULL, NULL, x, y);
+    SDL_Rect* vt = new SDL_Rect{ 350,300, 600, 100 };
+    SDL_RenderCopy(renderer, gover, NULL, vt);
+    SDL_FreeSurface(over);
+    SDL_DestroyTexture(gover);
+}
 void gameabout1()
 {
 
@@ -922,24 +986,25 @@ void handleCharacterSelectionEvent(SDL_Event& e) {
     if (e.type == SDL_KEYDOWN) {
         if (e.key.keysym.sym == SDLK_1)
         {
-            selectedCharacter == 1;
+            selectedCharacter = 1;
         }
         else if (e.key.keysym.sym == SDLK_2)
         {
-            selectedCharacter == 2;
+            selectedCharacter = 2;
         }
         else if (e.key.keysym.sym == SDLK_3)
         {
-            selectedCharacter == 3;
+            selectedCharacter = 3;
         }
         else if (e.key.keysym.sym == SDLK_4)
         {
-            selectedCharacter == 4;
+            selectedCharacter = 4;
         }
         else if (e.key.keysym.sym == SDLK_5)
         {
-            selectedCharacter == 5;
+            selectedCharacter = 5;
         }
+    }
         //// Xác định vị trí chuột
         //int mouseX = e.button.x;
         //int mouseY = e.button.y;
@@ -969,6 +1034,6 @@ void handleCharacterSelectionEvent(SDL_Event& e) {
         //    //selectCharacterImage(3); // Chọn hình ảnh đầu tiên
         //    selectedCharacter = 5;
         //}
-    }
+    
 }
 
