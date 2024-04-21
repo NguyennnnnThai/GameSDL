@@ -54,6 +54,11 @@ SDL_Rect about_Rect;
 SDL_Rect ending_rect;
 SDL_Rect bkgrover_rect;
 SDL_Rect pauseG_rect;
+SDL_Rect ship1_rect;
+SDL_Rect ship2_rect;
+SDL_Rect ship3_rect;
+SDL_Rect ship4_rect;
+SDL_Rect ship5_rect;
 
 SDL_Color color = { 255, 255, 255}; 
 TTF_Font* font;
@@ -828,3 +833,62 @@ void selectCharacterImage(int index) {
         characterTexture = characterTextures[index];
     }
 }
+void showCharacterSelectionMenu() {
+    ship1_rect.x = 100;
+    ship1_rect.y = 100;
+    ship1_rect.w = 100;
+    ship1_rect.h = 100;
+
+    ship2_rect.x = 200;
+    ship2_rect.y = 200;
+    ship2_rect.w = 100;
+    ship2_rect.h = 100;
+
+    ship3_rect.x = 300;
+    ship3_rect.y = 300;
+    ship3_rect.w = 100;
+    ship3_rect.h = 100;
+
+    ship4_rect.x = 400;
+    ship4_rect.y = 400;
+    ship4_rect.w = 100;
+    ship4_rect.h = 100;
+
+    ship5_rect.x = 500;
+    ship5_rect.y = 500;
+    ship5_rect.w = 100;
+    ship5_rect.h = 100;
+
+    SDL_RenderCopy(renderer, ship1, NULL, &ship1_rect);
+    SDL_RenderCopy(renderer, ship2, NULL, &ship2_rect);
+    SDL_RenderCopy(renderer, ship3, NULL, &ship3_rect);
+    SDL_RenderCopy(renderer, ship4, NULL, &ship4_rect);
+    SDL_RenderCopy(renderer, ship5, NULL, &ship5_rect);
+}
+
+// Hàm để xử lý sự kiện khi người chơi chọn một hình ảnh cho nhân vật
+void handleCharacterSelectionEvent(SDL_Event& e) {
+    if (e.type == SDL_MOUSEBUTTONDOWN) {
+        // Xác định vị trí chuột
+        int mouseX = e.button.x;
+        int mouseY = e.button.y;
+
+        // Kiểm tra xem người chơi đã chọn vào hình ảnh nào
+        // Ở đây, chúng ta giả sử có 3 hình ảnh cho nhân vật và chúng được hiển thị tại các vị trí xác định trước
+        // Nếu click vào vùng tương ứng với hình ảnh thứ nhất, ta chọn hình ảnh đó, và tương tự cho các hình ảnh khác
+        if (mouseX >= ship1_rect.x && mouseX < ship1_rect.x + ship1_rect.w &&
+            mouseY >= ship1_rect.y && mouseY < ship1_rect.y + ship1_rect.h) {
+            selectCharacterImage(0); // Chọn hình ảnh đầu tiên
+        }
+        else if (mouseX >= ship2_rect.x && mouseX < ship2_rect.x + ship2_rect.w &&
+            mouseY >= ship2_rect.y && mouseY < ship2_rect.y + ship2_rect.h) {
+            selectCharacterImage(1); // Chọn hình ảnh đầu tiên
+        }
+        else if (mouseX >= ship3_rect.x && mouseX < ship3_rect.x + ship3_rect.w &&
+            mouseY >= ship3_rect.y && mouseY < ship3_rect.y + ship3_rect.h) {
+            selectCharacterImage(3); // Chọn hình ảnh đầu tiên
+        }
+        // Bạn có thể mở rộng để hỗ trợ nhiều hình ảnh hơn cho nhân vật tùy thuộc vào thiết kế của game
+    }
+}
+
