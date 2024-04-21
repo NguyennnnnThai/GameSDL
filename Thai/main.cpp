@@ -38,12 +38,17 @@ SDL_Texture* about = NULL;
 SDL_Texture* ending = NULL;
 SDL_Texture* bossgame = NULL;
 SDL_Texture* greenbullet = NULL;
+SDL_Texture* bkgrover = NULL;
+SDL_Texture* pauseG = NULL;
+
 
 SDL_Rect characterRect = { 0, 0, 100, 150 };
 SDL_Rect mainMenu_rect;
 SDL_Rect play_Rect;
 SDL_Rect about_Rect;
 SDL_Rect ending_rect;
+SDL_Rect bkgrover_rect;
+SDL_Rect pauseG_rect;
 
 SDL_Color color = { 255, 255, 255}; 
 TTF_Font* font;
@@ -107,6 +112,9 @@ void soundEffect();
 void gameoverover();
 void gameabout1();
 void gameabout2();
+void overEndingGame(SDL_Renderer* renderer);
+void pressPauseGame(SDL_Renderer* renderer);
+void gameabout3();
 
 int main(int argc, char* args[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -119,12 +127,14 @@ int main(int argc, char* args[]) {
     SDL_Surface* threatObjectSurface = IMG_Load("threatObject.png");
     SDL_Surface* explosionSurface = IMG_Load("no.png");     
     SDL_Surface* liveSurface = IMG_Load("heart.png");
-    SDL_Surface* mainMenuSurface = IMG_Load("mainmenu.png");
+    SDL_Surface* mainMenuSurface = IMG_Load("d2t1.jpg");
     SDL_Surface* playSurface = IMG_Load("play.png");
     SDL_Surface* aboutSurface = IMG_Load("about.png");
-    SDL_Surface* endingSurface = IMG_Load("end.jpg");
+    SDL_Surface* endingSurface = IMG_Load("testbk.jpg");
     SDL_Surface* bossgameSurface = IMG_Load("threatObject.png");
     SDL_Surface* greenbulletSurface = IMG_Load("enemybullet.png");
+    SDL_Surface* bkgroverSurface = IMG_Load("bkgrgover.jpg");
+    SDL_Surface* pauseGSurface = IMG_Load("d2t3.jpg");
 
     backgroundSurface = IMG_Load("background.jpg");
     
@@ -138,8 +148,10 @@ int main(int argc, char* args[]) {
     ending = SDL_CreateTextureFromSurface(renderer, endingSurface);
     bossgame = SDL_CreateTextureFromSurface(renderer, bossgameSurface);
     greenbullet = SDL_CreateTextureFromSurface(renderer, greenbulletSurface);
+    bkgrover = SDL_CreateTextureFromSurface(renderer, bkgroverSurface);
+    pauseG = SDL_CreateTextureFromSurface(renderer, pauseGSurface);
 
-    font = TTF_OpenFont("font.ttf", 28);
+    font = TTF_OpenFont("Jersey25-Regular.ttf", 28);
     SDL_FreeSurface(explosionSurface);
 
 
@@ -187,14 +199,14 @@ int main(int argc, char* args[]) {
                 quit = true;
             }
             else if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEMOTION) {
-                
+
                 mouseX = e.button.x;
                 mouseY = e.button.y;
                 if (inMainMenu && e.type == SDL_MOUSEBUTTONDOWN) {
-                    
+
                     if (mouseX >= play_Rect.x && mouseX <= play_Rect.x + play_Rect.w &&
                         mouseY >= play_Rect.y && mouseY <= play_Rect.y + play_Rect.h) {
-                        inMainMenu = false; 
+                        inMainMenu = false;
                     }
                     else if (mouseX >= about_Rect.x && mouseX <= about_Rect.x + about_Rect.w &&
                         mouseY >= about_Rect.y && mouseY <= about_Rect.y + about_Rect.h) {
@@ -203,74 +215,89 @@ int main(int argc, char* args[]) {
                     }
 
                 }
-              
+
                 else {
-                    
+
                     innhanvat(mouseX, mouseY);
                     if (e.type == SDL_MOUSEBUTTONDOWN)
                     {
                         toadodan.push_back({ mouseX - 25,mouseY - 50 });
-                        
+
                     }
+                }
+            }
+            else if (e.type == SDL_KEYDOWN) {
+                if (e.key.keysym.sym == SDLK_SPACE) {
+                    // Đảo ngược trạng thái pause/resume khi nhấn phím SPACE
+                    gamePaused = !gamePaused;
                 }
             }
         }
 
-        
-       if (inMainMenu) {
-           
-            createMainMenu(renderer);
-            SDL_RenderCopy(renderer, mainMenu, NULL, &mainMenu_rect);
-            SDL_RenderCopy(renderer, play, NULL, &play_Rect);
-            SDL_RenderCopy(renderer, about, NULL, &about_Rect);
-            if (aboutbutton &&inMainMenu)
-            {
-                SDL_RenderClear(renderer);
+        if (!gamePaused) {
+            if (inMainMenu) {
+
+                createMainMenu(renderer);
+                SDL_RenderCopy(renderer, mainMenu, NULL, &mainMenu_rect);
                 SDL_RenderCopy(renderer, play, NULL, &play_Rect);
-                gameabout1();
-                gameabout2();
+                SDL_RenderCopy(renderer, about, NULL, &about_Rect);
+                if (aboutbutton && inMainMenu)
+                {
+                    SDL_RenderClear(renderer);
+                    SDL_RenderCopy(renderer, play, NULL, &play_Rect);
+                    gameabout1();
+                    gameabout2();
+                    gameabout3();
+                }
+
             }
-           
+
+            else {
+
+                inbackground();
+                drawHealth();
+                innhanvat(mouseX, mouseY);
+                inThreatObject();
+                moveThreatObjects();
+                indan();
+                shootThreatObjects();
+                checkCharacterCollision();
+
+                if (levelCompleted) {
+
+                    level++;
+                    createLevel(level);
+
+                    levelCompleted = false;
+
+                }
+
+                if (level > 6)
+                {
+                    endinggame(renderer);
+                    gameover();
+
+                }
+                if (trungdan == 3) {
+                    SDL_RenderClear(renderer);
+                    overEndingGame(renderer);
+                    gameover();
+                    gameoverover();
+
+                    SDL_Delay(200);
+
+                }
+            }
+
+            SDL_RenderPresent(renderer);
+            SDL_RenderClear(renderer);
+            SDL_Delay(10);
         }
-      
-       else {
-            
-            inbackground();
-            drawHealth();
-            innhanvat(mouseX, mouseY);
-            inThreatObject();
-            moveThreatObjects();
-            indan();
-            shootThreatObjects();
-            checkCharacterCollision();
-            
-            if (levelCompleted) {
-                
-                level++;
-                createLevel(level);
-                
-                levelCompleted = false; 
-                
-            }
-            
-            if (level > 6)
-            {
-                endinggame(renderer);
-                gameover();
-                
-            }
-            if (trungdan==3) {
-                SDL_RenderClear(renderer);
-                gameover();
-                gameoverover();
-                SDL_Delay(200);
-                
-            }
-        }
-        
-        SDL_RenderPresent(renderer);
-        SDL_RenderClear(renderer);
-        SDL_Delay(10);
+    }
+    if (gamePaused) {
+        // Hiển thị thông báo pause
+         SDL_RenderClear(renderer);
+         pressPauseGame( renderer);
     }
 
     Mix_FreeMusic(backgroundMusic);
@@ -727,7 +754,7 @@ void gameabout1()
     int* x = new int(300);
     int* y = new int(300);
     SDL_QueryTexture(gover, NULL, NULL, x, y);
-    SDL_Rect* vt = new SDL_Rect{ 200,300, 600, 100 };
+    SDL_Rect* vt = new SDL_Rect{ 200,150, 700, 100 };
     SDL_RenderCopy(renderer, gover, NULL, vt);
     SDL_FreeSurface(over);
     SDL_DestroyTexture(gover);
@@ -741,8 +768,39 @@ void gameabout2()
     int* x = new int(300);
     int* y = new int(300);
     SDL_QueryTexture(gover, NULL, NULL, x, y);
-    SDL_Rect* vt = new SDL_Rect{ 200,400, 600, 100 };
+    SDL_Rect* vt = new SDL_Rect{ 200,250, 700, 100 };
     SDL_RenderCopy(renderer, gover, NULL, vt);
     SDL_FreeSurface(over);
     SDL_DestroyTexture(gover);
+}
+void gameabout3()
+{
+
+    SDL_Surface* over = TTF_RenderText_Solid(font, "Press SPACE to PAUSE/RESUME", color);
+    SDL_Texture* gover = SDL_CreateTextureFromSurface(renderer, over);
+
+    int* x = new int(300);
+    int* y = new int(300);
+    SDL_QueryTexture(gover, NULL, NULL, x, y);
+    SDL_Rect* vt = new SDL_Rect{ 200,450, 700, 100 };
+    SDL_RenderCopy(renderer, gover, NULL, vt);
+    SDL_FreeSurface(over);
+    SDL_DestroyTexture(gover);
+}
+void overEndingGame(SDL_Renderer* renderer)
+{
+    bkgrover_rect.x = 0;
+    bkgrover_rect.y = 0;
+    bkgrover_rect.w = 1280;
+    bkgrover_rect.h = 680;
+    SDL_RenderCopy(renderer, bkgrover, NULL, &bkgrover_rect);
+}
+
+void pressPauseGame(SDL_Renderer* renderer)
+{
+    pauseG_rect.x = 0;
+    pauseG_rect.y = 0;
+    pauseG_rect.w = 1280;
+    pauseG_rect.h = 680;
+    SDL_RenderCopy(renderer, pauseG, NULL, &pauseG_rect);
 }
