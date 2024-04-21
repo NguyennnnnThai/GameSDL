@@ -361,6 +361,7 @@ void innhanvat(int x, int y) {
     if (!inMainMenu) { // Chỉ in nhân vật khi không ở trong Main Menu
         characterRect.x = x - (characterRect.w / 2);
         characterRect.y = y - (characterRect.h / 2);
+        SDL_ShowCursor(SDL_DISABLE);
         if (selectedCharacter == -1) {
         SDL_RenderCopy(renderer, characterTexture, NULL, &characterRect);
         }
