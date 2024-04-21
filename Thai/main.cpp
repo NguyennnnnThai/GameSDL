@@ -20,7 +20,9 @@ bool levelCompleted = false;
 bool gamePaused = false;
 bool gameOver = false;
 bool aboutbutton = false;
+int selectedCharacter = -1;
 int selectedCharacterIndex = 0;
+bool optionbutton = false;
 
 SDL_Renderer* renderer = NULL;
 SDL_Window* window = NULL;
@@ -46,8 +48,10 @@ SDL_Texture* ship2 = NULL;
 SDL_Texture* ship3 = NULL;
 SDL_Texture* ship4 = NULL;
 SDL_Texture* ship5 = NULL;          
+SDL_Texture* option = NULL;
+SDL_Texture* khungoption = NULL;
 
-SDL_Rect characterRect = { 0, 0, 100, 150 };
+SDL_Rect characterRect = { 0, 0, 100, 100 };
 SDL_Rect mainMenu_rect;
 SDL_Rect play_Rect;
 SDL_Rect about_Rect;
@@ -59,6 +63,8 @@ SDL_Rect ship2_rect;
 SDL_Rect ship3_rect;
 SDL_Rect ship4_rect;
 SDL_Rect ship5_rect;
+SDL_Rect option_rect;
+SDL_Rect khungoption_rect;
 
 SDL_Color color = { 255, 255, 255}; 
 TTF_Font* font;
@@ -69,7 +75,7 @@ int traitim = 3;
 SDL_Rect healthRect = { 10, 10, 100, 30 }; 
 
 vector<pair<int, int>> toadodan;
-vector<SDL_Texture*> characterTextures;
+//vector<SDL_Texture*> characterTextures;
 
 struct ThreatObject {
     int x, y;
@@ -81,10 +87,6 @@ struct ThreatObject {
     double timeBetweenShots;
     ThreatObject(int _x, int _y, int _speed, char _direction) : x(_x), y(_y), speed(_speed), direction(_direction), lastShootTime(clock()) {}
 };
-
-
-
-
 
 struct Bullet {
     int x, y;  
@@ -153,7 +155,8 @@ int main(int argc, char* args[]) {
     SDL_Surface* ship3S = IMG_Load("ship3.png");
     SDL_Surface* ship4S = IMG_Load("ship4.png");
     SDL_Surface* ship5S = IMG_Load("ship5.png");
-
+    SDL_Surface* optionS = IMG_Load("option.png");
+    SDL_Surface* khungoptionS = IMG_Load("khungoption.png");
     backgroundSurface = IMG_Load("background.jpg");
     
     bullet = SDL_CreateTextureFromSurface(renderer, imagebullet);   
@@ -173,6 +176,8 @@ int main(int argc, char* args[]) {
     ship3 = SDL_CreateTextureFromSurface(renderer, ship3S);
     ship4 = SDL_CreateTextureFromSurface(renderer, ship4S);
     ship5 = SDL_CreateTextureFromSurface(renderer, ship5S);
+    option = SDL_CreateTextureFromSurface(renderer, optionS);
+    khungoption = SDL_CreateTextureFromSurface(renderer, khungoptionS);
 
     font = TTF_OpenFont("Jersey25-Regular.ttf", 28);
     SDL_FreeSurface(explosionSurface);
@@ -236,7 +241,11 @@ int main(int argc, char* args[]) {
                         aboutbutton = true;
                         //inMainMenu = false;
                     }
-
+                    else if (mouseX >= option_rect.x && mouseX <= option_rect.x + option_rect.w &&
+                        mouseY >= option_rect.y && mouseY <= option_rect.y + option_rect.h) {
+                        optionbutton = true;
+                        //inMainMenu = false;
+                    }
                 }
 
                 else {
@@ -264,15 +273,24 @@ int main(int argc, char* args[]) {
                 SDL_RenderCopy(renderer, mainMenu, NULL, &mainMenu_rect);
                 SDL_RenderCopy(renderer, play, NULL, &play_Rect);
                 SDL_RenderCopy(renderer, about, NULL, &about_Rect);
+                SDL_RenderCopy(renderer, option, NULL, &option_rect);
                 if (aboutbutton && inMainMenu)
                 {
                     SDL_RenderClear(renderer);
                     SDL_RenderCopy(renderer, play, NULL, &play_Rect);
+                    SDL_RenderCopy(renderer, option, NULL, &option_rect);
                     gameabout1();
                     gameabout2();
                     gameabout3();
                 }
-
+                if (optionbutton && inMainMenu)
+                {
+                    SDL_RenderClear(renderer);
+                    SDL_RenderCopy(renderer, play, NULL, &play_Rect);
+                    SDL_RenderCopy(renderer, about, NULL, &about_Rect);
+                    showCharacterSelectionMenu();
+                    handleCharacterSelectionEvent(e);
+                }
             }
 
             else {
@@ -343,7 +361,25 @@ void innhanvat(int x, int y) {
     if (!inMainMenu) { // Chỉ in nhân vật khi không ở trong Main Menu
         characterRect.x = x - (characterRect.w / 2);
         characterRect.y = y - (characterRect.h / 2);
+        if (selectedCharacter == -1) {
         SDL_RenderCopy(renderer, characterTexture, NULL, &characterRect);
+        }
+        else if (selectedCharacter==1) {
+            SDL_RenderCopy(renderer, ship1, NULL, &characterRect);
+        }
+        else if (selectedCharacter==2) {
+            SDL_RenderCopy(renderer, ship2, NULL, &characterRect);
+        }
+        else if (selectedCharacter==3) {
+            SDL_RenderCopy(renderer,ship3,NULL,&characterRect);
+        }
+        else if (selectedCharacter==4) {
+            SDL_RenderCopy(renderer, ship4, NULL, &characterRect);
+        }
+        else if (selectedCharacter==5) {
+            SDL_RenderCopy(renderer, ship5, NULL, &characterRect);
+        }
+        
     }
 }
 
@@ -538,10 +574,16 @@ void createMainMenu(SDL_Renderer* renderer) {
     about_Rect.w = 200;
     about_Rect.h = 50;
 
+    
+    option_rect.x = 1000;
+    option_rect.y = 400;
+    option_rect.w = 200;
+    option_rect.h = 200;
+
     SDL_RenderCopy(renderer, mainMenu, NULL, &mainMenu_rect);
     SDL_RenderCopy(renderer, play, NULL, &play_Rect);
     SDL_RenderCopy(renderer, about, NULL, &about_Rect);
-    
+    SDL_RenderCopy(renderer, option, NULL, &option_rect);
 }
 
 //void createLevel(int level) {
@@ -828,14 +870,14 @@ void pressPauseGame(SDL_Renderer* renderer)
     SDL_RenderCopy(renderer, pauseG, NULL, &pauseG_rect);
 }
 
-void selectCharacterImage(int index) {
-    if (index >= 0 && index < characterTextures.size()) {
-        // Cập nhật chỉ số của hình ảnh được chọn
-        selectedCharacterIndex = index;
-        // Cập nhật hình ảnh cho nhân vật
-        characterTexture = characterTextures[index];
-    }
-}
+//void selectCharacterImage(int index) {
+//    if (index >= 0 && index < characterTextures.size()) {
+//        // Cập nhật chỉ số của hình ảnh được chọn
+//        selectedCharacterIndex = index;
+//        // Cập nhật hình ảnh cho nhân vật
+//        characterTexture = characterTextures[index];
+//    }
+//}
 void showCharacterSelectionMenu() {
     ship1_rect.x = 100;
     ship1_rect.y = 100;
@@ -843,17 +885,17 @@ void showCharacterSelectionMenu() {
     ship1_rect.h = 100;
 
     ship2_rect.x = 200;
-    ship2_rect.y = 200;
+    ship2_rect.y = 100;
     ship2_rect.w = 100;
     ship2_rect.h = 100;
 
-    ship3_rect.x = 300;
-    ship3_rect.y = 300;
+    ship3_rect.x = 100;
+    ship3_rect.y = 200;
     ship3_rect.w = 100;
     ship3_rect.h = 100;
 
-    ship4_rect.x = 400;
-    ship4_rect.y = 400;
+    ship4_rect.x = 200;
+    ship4_rect.y = 200;
     ship4_rect.w = 100;
     ship4_rect.h = 100;
 
@@ -862,6 +904,12 @@ void showCharacterSelectionMenu() {
     ship5_rect.w = 100;
     ship5_rect.h = 100;
 
+    khungoption_rect.x = 100;
+    khungoption_rect.y = 100;
+    khungoption_rect.w = 800;
+    khungoption_rect.h = 300;
+
+    SDL_RenderCopy(renderer, khungoption, NULL, &khungoption_rect);
     SDL_RenderCopy(renderer, ship1, NULL, &ship1_rect);
     SDL_RenderCopy(renderer, ship2, NULL, &ship2_rect);
     SDL_RenderCopy(renderer, ship3, NULL, &ship3_rect);
@@ -869,29 +917,57 @@ void showCharacterSelectionMenu() {
     SDL_RenderCopy(renderer, ship5, NULL, &ship5_rect);
 }
 
-// Hàm để xử lý sự kiện khi người chơi chọn một hình ảnh cho nhân vật
 void handleCharacterSelectionEvent(SDL_Event& e) {
-    if (e.type == SDL_MOUSEBUTTONDOWN) {
-        // Xác định vị trí chuột
-        int mouseX = e.button.x;
-        int mouseY = e.button.y;
+    if (e.type == SDL_KEYDOWN) {
+        if (e.key.keysym.sym == SDLK_1)
+        {
+            selectedCharacter == 1;
+        }
+        else if (e.key.keysym.sym == SDLK_2)
+        {
+            selectedCharacter == 2;
+        }
+        else if (e.key.keysym.sym == SDLK_3)
+        {
+            selectedCharacter == 3;
+        }
+        else if (e.key.keysym.sym == SDLK_4)
+        {
+            selectedCharacter == 4;
+        }
+        else if (e.key.keysym.sym == SDLK_5)
+        {
+            selectedCharacter == 5;
+        }
+        //// Xác định vị trí chuột
+        //int mouseX = e.button.x;
+        //int mouseY = e.button.y;
 
-        // Kiểm tra xem người chơi đã chọn vào hình ảnh nào
-        // Ở đây, chúng ta giả sử có 3 hình ảnh cho nhân vật và chúng được hiển thị tại các vị trí xác định trước
-        // Nếu click vào vùng tương ứng với hình ảnh thứ nhất, ta chọn hình ảnh đó, và tương tự cho các hình ảnh khác
-        if (mouseX >= ship1_rect.x && mouseX < ship1_rect.x + ship1_rect.w &&
-            mouseY >= ship1_rect.y && mouseY < ship1_rect.y + ship1_rect.h) {
-            selectCharacterImage(0); // Chọn hình ảnh đầu tiên
-        }
-        else if (mouseX >= ship2_rect.x && mouseX < ship2_rect.x + ship2_rect.w &&
-            mouseY >= ship2_rect.y && mouseY < ship2_rect.y + ship2_rect.h) {
-            selectCharacterImage(1); // Chọn hình ảnh đầu tiên
-        }
-        else if (mouseX >= ship3_rect.x && mouseX < ship3_rect.x + ship3_rect.w &&
-            mouseY >= ship3_rect.y && mouseY < ship3_rect.y + ship3_rect.h) {
-            selectCharacterImage(3); // Chọn hình ảnh đầu tiên
-        }
-        // Bạn có thể mở rộng để hỗ trợ nhiều hình ảnh hơn cho nhân vật tùy thuộc vào thiết kế của game
+        //if (mouseX >= ship1_rect.x && mouseX < ship1_rect.x + ship1_rect.w &&
+        //    mouseY >= ship1_rect.y && mouseY < ship1_rect.y + ship1_rect.h) {
+        //    //selectCharacterImage(0); // Chọn hình ảnh đầu tiên
+        //    selectedCharacter = 1;
+        //}
+        //else if (mouseX >= ship2_rect.x && mouseX < ship2_rect.x + ship2_rect.w &&
+        //    mouseY >= ship2_rect.y && mouseY < ship2_rect.y + ship2_rect.h) {
+        //    //selectCharacterImage(1); // Chọn hình ảnh đầu tiên
+        //    selectedCharacter = 2;
+        //}
+        //else if (mouseX >= ship3_rect.x && mouseX < ship3_rect.x + ship3_rect.w &&
+        //    mouseY >= ship3_rect.y && mouseY < ship3_rect.y + ship3_rect.h) {
+        //    //selectCharacterImage(3); // Chọn hình ảnh đầu tiên
+        //    selectedCharacter = 3;
+        //}
+        //else if (mouseX >= ship4_rect.x && mouseX < ship4_rect.x + ship4_rect.w &&
+        //    mouseY >= ship4_rect.y && mouseY < ship4_rect.y + ship4_rect.h) {
+        //    //selectCharacterImage(3); // Chọn hình ảnh đầu tiên
+        //    selectedCharacter = 4;
+        //}
+        //else if (mouseX >= ship5_rect.x && mouseX < ship5_rect.x + ship5_rect.w &&
+        //    mouseY >= ship5_rect.y && mouseY < ship5_rect.y + ship5_rect.h) {
+        //    //selectCharacterImage(3); // Chọn hình ảnh đầu tiên
+        //    selectedCharacter = 5;
+        //}
     }
 }
 
