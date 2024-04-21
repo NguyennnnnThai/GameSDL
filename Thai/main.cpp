@@ -125,6 +125,9 @@ void gameabout2();
 void overEndingGame(SDL_Renderer* renderer);
 void pressPauseGame(SDL_Renderer* renderer);
 void gameabout3();
+void selectCharacterImage(int index);
+void showCharacterSelectionMenu();
+void handleCharacterSelectionEvent(SDL_Event& e);
 
 int main(int argc, char* args[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
