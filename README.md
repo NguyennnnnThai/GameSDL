@@ -18,6 +18,7 @@ Bạn có thể xem video tại link : https://youtu.be/W_Rq8dIWRBE
 - In chữ
 - Xử lí va chạm
 - Toán học
+- Xử lí đầu vào từ cả bàn phím và chuột
 # Ngưỡng điểm dự kiến
 Em cảm thấy bài của mình nằm trong mức từ 7.5-8.5
 ## Một vài lí do để đạt mức điểm đó
