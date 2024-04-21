@@ -58,6 +58,8 @@ SDL_Texture* ship5 = NULL;
 SDL_Texture* option = NULL;
 SDL_Texture* khungoption = NULL;
 SDL_Texture* tickk = NULL;
+SDL_Texture* bullet1 = NULL;
+SDL_Texture* bullet2 = NULL;
 
 SDL_Rect characterRect = { 0, 0, 100, 100 };
 SDL_Rect mainMenu_rect;
@@ -73,6 +75,7 @@ SDL_Rect ship4_rect;
 SDL_Rect ship5_rect;
 SDL_Rect option_rect;
 SDL_Rect khungoption_rect;
+SDL_Rect tikk_rect;
 
 SDL_Color color = { 255, 255, 255}; 
 TTF_Font* font;
@@ -140,6 +143,12 @@ void gameabout4();
 void selectCharacterImage(int index);
 void showCharacterSelectionMenu();
 void handleCharacterSelectionEvent(SDL_Event& e);
+void s1();
+void s2();
+void s3();
+void s4();
+void s5();
+void fact();
 
 int main(int argc, char* args[]) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -155,7 +164,7 @@ int main(int argc, char* args[]) {
     SDL_Surface* mainMenuSurface = IMG_Load("d2t1.jpg");
     SDL_Surface* playSurface = IMG_Load("play.png");
     SDL_Surface* aboutSurface = IMG_Load("about.png");
-    SDL_Surface* endingSurface = IMG_Load("testbk.jpg");
+    SDL_Surface* endingSurface = IMG_Load("s3.jpg");
     SDL_Surface* bossgameSurface = IMG_Load("threatObject.png");
     SDL_Surface* greenbulletSurface = IMG_Load("enemybullet.png");
     SDL_Surface* bkgroverSurface = IMG_Load("bkgrgover.jpg");
@@ -168,6 +177,8 @@ int main(int argc, char* args[]) {
     SDL_Surface* optionS = IMG_Load("option.png");
     SDL_Surface* khungoptionS = IMG_Load("khungoption.png");
     SDL_Surface* tickkS = IMG_Load("tick.png");
+    SDL_Surface* bullet1S = IMG_Load("bullet02.png");
+    SDL_Surface* bullet2S = IMG_Load("bullet03.png");
     backgroundSurface = IMG_Load("background.jpg");
     
     bullet = SDL_CreateTextureFromSurface(renderer, imagebullet);   
@@ -190,6 +201,8 @@ int main(int argc, char* args[]) {
     option = SDL_CreateTextureFromSurface(renderer, optionS);
     khungoption = SDL_CreateTextureFromSurface(renderer, khungoptionS);
     tickk = SDL_CreateTextureFromSurface(renderer, tickkS);
+    bullet1 = SDL_CreateTextureFromSurface(renderer, bullet1S);
+    bullet2 = SDL_CreateTextureFromSurface(renderer, bullet2S);
 
     font = TTF_OpenFont("Jersey25-Regular.ttf", 28);
     SDL_FreeSurface(explosionSurface);
@@ -278,27 +291,42 @@ int main(int argc, char* args[]) {
                 if (e.key.keysym.sym == SDLK_1)
                 {
                     select1 = true;
-
+                    select2 = false;
+                    select3 = false;
+                    select4 = false;
+                    select5 = false;
                 }
                 if (e.key.keysym.sym == SDLK_2)
                 {
                     select2 = true;
-
+                    select1 = false;
+                    select3 = false;
+                    select4 = false;
+                    select5 = false;
                 }
                 if (e.key.keysym.sym == SDLK_3)
                 {
                     select3 = true;
-
+                    select1 = false;
+                    select2 = false;
+                    select4 = false;
+                    select5 = false;
                 }
                 if (e.key.keysym.sym == SDLK_4)
                 {
                     select4 = true;
-
+                    select1 = false;
+                    select3 = false;
+                    select2 = false;
+                    select5 = false;
                 }
                 if (e.key.keysym.sym == SDLK_5)
                 {
                     select5 = true;
-
+                    select1 = false;
+                    select3 = false;
+                    select4 = false;
+                    select2 = false;
                 }
             }
         }
@@ -314,6 +342,7 @@ int main(int argc, char* args[]) {
                 if (aboutbutton && inMainMenu)
                 {
                     SDL_RenderClear(renderer);
+                    SDL_RenderCopy(renderer, mainMenu, NULL, &mainMenu_rect);
                     SDL_RenderCopy(renderer, play, NULL, &play_Rect);
                     SDL_RenderCopy(renderer, option, NULL, &option_rect);
                     gameabout1();
@@ -324,10 +353,52 @@ int main(int argc, char* args[]) {
                 if (optionbutton && inMainMenu)
                 {
                     SDL_RenderClear(renderer);
+                    SDL_RenderCopy(renderer, mainMenu, NULL, &mainMenu_rect);
                     SDL_RenderCopy(renderer, play, NULL, &play_Rect);
                     SDL_RenderCopy(renderer, about, NULL, &about_Rect);
                     showCharacterSelectionMenu();
                     handleCharacterSelectionEvent(e);
+                    s1();
+                    s2();
+                    s3();
+                    s4();
+                    s5();
+                    fact();
+                    if (select1) {
+                        tikk_rect.x = ship1_rect.x;
+                        tikk_rect.y = ship1_rect.y;
+                        tikk_rect.w = 20;
+                        tikk_rect.h = 20;
+                        SDL_RenderCopy(renderer, tickk, NULL, &tikk_rect);
+                    }
+                    else if (select2) {
+                        tikk_rect.x = ship2_rect.x;
+                        tikk_rect.y = ship2_rect.y;
+                        tikk_rect.w = 20;
+                        tikk_rect.h = 20;
+                        SDL_RenderCopy(renderer, tickk, NULL, &tikk_rect);
+                    }
+                    else if (select3) {
+                        tikk_rect.x = ship3_rect.x;
+                        tikk_rect.y = ship3_rect.y;
+                        tikk_rect.w = 20;
+                        tikk_rect.h = 20;
+                        SDL_RenderCopy(renderer, tickk, NULL, &tikk_rect);
+                    }
+                    else if (select4) {
+                        tikk_rect.x = ship4_rect.x;
+                        tikk_rect.y = ship4_rect.y;
+                        tikk_rect.w = 20;
+                        tikk_rect.h = 20;
+                        SDL_RenderCopy(renderer, tickk, NULL, &tikk_rect);
+                    }
+                    else if (select5) {
+                        tikk_rect.x = ship5_rect.x;
+                        tikk_rect.y = ship5_rect.y;
+                        tikk_rect.w = 20;
+                        tikk_rect.h = 20;
+                        SDL_RenderCopy(renderer, tickk, NULL, &tikk_rect);
+                    }
                 }
             }
 
@@ -476,8 +547,15 @@ void indan() {
     for (int i = 0; i < toadodan.size(); ++i) {
         bulletRect.x = toadodan[i].f;
         bulletRect.y = toadodan[i].s;
-
-        SDL_RenderCopy(renderer, bullet, NULL, &bulletRect);
+        if (select1 || select5) {
+            SDL_RenderCopy(renderer, bullet2, NULL, &bulletRect);
+        }
+        else if (select2 || select4) {
+            SDL_RenderCopy(renderer, bullet1, NULL, &bulletRect);
+        }
+        else {
+            SDL_RenderCopy(renderer, bullet, NULL, &bulletRect);
+        }
         toadodan[i].s -= 4;   
 
         
@@ -1019,7 +1097,7 @@ void showCharacterSelectionMenu() {
     khungoption_rect.x = 25;
     khungoption_rect.y = 5;
     khungoption_rect.w = 850;
-    khungoption_rect.h = 600;
+    khungoption_rect.h = 640;
 
     SDL_RenderCopy(renderer, khungoption, NULL, &khungoption_rect);
     SDL_RenderCopy(renderer, ship1, NULL, &ship1_rect);
@@ -1083,4 +1161,87 @@ void handleCharacterSelectionEvent(SDL_Event& e) {
         //}
     
 }
+void s1()
+{
 
+    SDL_Surface* over = TTF_RenderText_Solid(font, "1", color);
+    SDL_Texture* gover = SDL_CreateTextureFromSurface(renderer, over);
+
+    int* x = new int(300);
+    int* y = new int(300);
+    SDL_QueryTexture(gover, NULL, NULL, x, y);
+    SDL_Rect* vt = new SDL_Rect{ 190,300, 15, 25 };
+    SDL_RenderCopy(renderer, gover, NULL, vt);
+    SDL_FreeSurface(over);
+    SDL_DestroyTexture(gover);
+}
+void s2()
+{
+
+    SDL_Surface* over = TTF_RenderText_Solid(font, "2", color);
+    SDL_Texture* gover = SDL_CreateTextureFromSurface(renderer, over);
+
+    int* x = new int(300);
+    int* y = new int(300);
+    SDL_QueryTexture(gover, NULL, NULL, x, y);
+    SDL_Rect* vt = new SDL_Rect{ 443,300, 15, 25 };
+    SDL_RenderCopy(renderer, gover, NULL, vt);
+    SDL_FreeSurface(over);
+    SDL_DestroyTexture(gover);
+}
+void s3()
+{
+
+    SDL_Surface* over = TTF_RenderText_Solid(font, "3", color);
+    SDL_Texture* gover = SDL_CreateTextureFromSurface(renderer, over);
+
+    int* x = new int(300);
+    int* y = new int(300);
+    SDL_QueryTexture(gover, NULL, NULL, x, y);
+    SDL_Rect* vt = new SDL_Rect{ 675,300, 15, 25 };
+    SDL_RenderCopy(renderer, gover, NULL, vt);
+    SDL_FreeSurface(over);
+    SDL_DestroyTexture(gover);
+}
+void s4()
+{
+
+    SDL_Surface* over = TTF_RenderText_Solid(font, "4", color);
+    SDL_Texture* gover = SDL_CreateTextureFromSurface(renderer, over);
+
+    int* x = new int(300);
+    int* y = new int(300);
+    SDL_QueryTexture(gover, NULL, NULL, x, y);
+    SDL_Rect* vt = new SDL_Rect{ 317,440, 15, 25 };
+    SDL_RenderCopy(renderer, gover, NULL, vt);
+    SDL_FreeSurface(over);
+    SDL_DestroyTexture(gover);
+}
+void s5()
+{
+
+    SDL_Surface* over = TTF_RenderText_Solid(font, "5", color);
+    SDL_Texture* gover = SDL_CreateTextureFromSurface(renderer, over);
+
+    int* x = new int(300);
+    int* y = new int(300);
+    SDL_QueryTexture(gover, NULL, NULL, x, y);
+    SDL_Rect* vt = new SDL_Rect{ 560,440, 15, 25};
+    SDL_RenderCopy(renderer, gover, NULL, vt);
+    SDL_FreeSurface(over);
+    SDL_DestroyTexture(gover);
+}
+void fact()
+{
+
+    SDL_Surface* over = TTF_RenderText_Solid(font, "Note: For each type of warship, we will have different types of bullets", color);
+    SDL_Texture* gover = SDL_CreateTextureFromSurface(renderer, over);
+
+    int* x = new int(300);
+    int* y = new int(300);
+    SDL_QueryTexture(gover, NULL, NULL, x, y);
+    SDL_Rect* vt = new SDL_Rect{ 75,550, 750, 100 };
+    SDL_RenderCopy(renderer, gover, NULL, vt);
+    SDL_FreeSurface(over);
+    SDL_DestroyTexture(gover);
+}
