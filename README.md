@@ -24,3 +24,4 @@ Em cảm thấy bài của mình nằm trong mức từ 7.5-8.5
 - Hình ảnh đẹp, phù hợp với chủ để của game
 - Nhạc nền, sound effect đúng chủ đề của game, khơi gợi sự hứng thú cho người chơi
 - Gameplay với nhiều màn chơi khác nhau
+- Có tạm dừng game
