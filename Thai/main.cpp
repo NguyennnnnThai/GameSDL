@@ -25,6 +25,11 @@ bool aboutbutton = false;
 int selectedCharacter = -1;
 int selectedCharacterIndex = 0;
 bool optionbutton = false;
+bool select1 = false;
+bool select2 = false;
+bool select3 = false;
+bool select4 = false;
+bool select5 = false;
 
 SDL_Renderer* renderer = NULL;
 SDL_Window* window = NULL;
@@ -131,6 +136,7 @@ void gameabout2();
 void overEndingGame(SDL_Renderer* renderer);
 void pressPauseGame(SDL_Renderer* renderer);
 void gameabout3();
+void gameabout4();
 void selectCharacterImage(int index);
 void showCharacterSelectionMenu();
 void handleCharacterSelectionEvent(SDL_Event& e);
@@ -269,6 +275,31 @@ int main(int argc, char* args[]) {
                     // Đảo ngược trạng thái pause/resume khi nhấn phím SPACE
                     gamePaused = !gamePaused;
                 }
+                if (e.key.keysym.sym == SDLK_1)
+                {
+                    select1 = true;
+
+                }
+                if (e.key.keysym.sym == SDLK_2)
+                {
+                    select2 = true;
+
+                }
+                if (e.key.keysym.sym == SDLK_3)
+                {
+                    select3 = true;
+
+                }
+                if (e.key.keysym.sym == SDLK_4)
+                {
+                    select4 = true;
+
+                }
+                if (e.key.keysym.sym == SDLK_5)
+                {
+                    select5 = true;
+
+                }
             }
         }
 
@@ -288,6 +319,7 @@ int main(int argc, char* args[]) {
                     gameabout1();
                     gameabout2();
                     gameabout3();
+                    gameabout4();
                 }
                 if (optionbutton && inMainMenu)
                 {
@@ -330,9 +362,10 @@ int main(int argc, char* args[]) {
                     overEndingGame(renderer);
                     gameover();
                     gameoverover();
+                    SDL_Delay(200);
                     gameOver1 = true;
-                    inMainMenu = true;
-                    SDL_ShowCursor(SDL_ENABLE);
+                   //inMainMenu = true;
+                    //SDL_ShowCursor(SDL_ENABLE);
                 //    if (e.type == SDL_KEYDOWN)
                 //    {
                 //        if (e.key.keysym.sym == SDLK_a) {
@@ -386,22 +419,22 @@ void innhanvat(int x, int y) {
         characterRect.x = x - (characterRect.w / 2);
         characterRect.y = y - (characterRect.h / 2);
         SDL_ShowCursor(SDL_DISABLE);
-        if (selectedCharacter == -1) {
+        if (!select1&&!select2&&!select3&&!select4&&!select5) {
         SDL_RenderCopy(renderer, characterTexture, NULL, &characterRect);
         }
-        else if (selectedCharacter==1) {
+        else if (select1) {
             SDL_RenderCopy(renderer, ship1, NULL, &characterRect);
         }
-        else if (selectedCharacter==2) {
+        else if (select2) {
             SDL_RenderCopy(renderer, ship2, NULL, &characterRect);
         }
-        else if (selectedCharacter==3) {
+        else if (select3) {
             SDL_RenderCopy(renderer,ship3,NULL,&characterRect);
         }
-        else if (selectedCharacter==4) {
+        else if (select4) {
             SDL_RenderCopy(renderer, ship4, NULL, &characterRect);
         }
-        else if (selectedCharacter==5) {
+        else if (select5) {
             SDL_RenderCopy(renderer, ship5, NULL, &characterRect);
         }
         
@@ -884,7 +917,7 @@ void gameabout1()
     int* x = new int(300);
     int* y = new int(300);
     SDL_QueryTexture(gover, NULL, NULL, x, y);
-    SDL_Rect* vt = new SDL_Rect{ 200,150, 700, 100 };
+    SDL_Rect* vt = new SDL_Rect{ 200,100, 700, 100 };
     SDL_RenderCopy(renderer, gover, NULL, vt);
     SDL_FreeSurface(over);
     SDL_DestroyTexture(gover);
@@ -898,7 +931,7 @@ void gameabout2()
     int* x = new int(300);
     int* y = new int(300);
     SDL_QueryTexture(gover, NULL, NULL, x, y);
-    SDL_Rect* vt = new SDL_Rect{ 200,250, 700, 100 };
+    SDL_Rect* vt = new SDL_Rect{ 200,200, 700, 100 };
     SDL_RenderCopy(renderer, gover, NULL, vt);
     SDL_FreeSurface(over);
     SDL_DestroyTexture(gover);
@@ -912,7 +945,21 @@ void gameabout3()
     int* x = new int(300);
     int* y = new int(300);
     SDL_QueryTexture(gover, NULL, NULL, x, y);
-    SDL_Rect* vt = new SDL_Rect{ 200,450, 700, 100 };
+    SDL_Rect* vt = new SDL_Rect{ 200,400, 700, 100 };
+    SDL_RenderCopy(renderer, gover, NULL, vt);
+    SDL_FreeSurface(over);
+    SDL_DestroyTexture(gover);
+}
+void gameabout4()
+{
+
+    SDL_Surface* over = TTF_RenderText_Solid(font, "Press 1->5 to choose your spaceship", color);
+    SDL_Texture* gover = SDL_CreateTextureFromSurface(renderer, over);
+
+    int* x = new int(300);
+    int* y = new int(300);
+    SDL_QueryTexture(gover, NULL, NULL, x, y);
+    SDL_Rect* vt = new SDL_Rect{ 200,500, 700, 100 };
     SDL_RenderCopy(renderer, gover, NULL, vt);
     SDL_FreeSurface(over);
     SDL_DestroyTexture(gover);
