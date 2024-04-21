@@ -45,7 +45,7 @@ SDL_Texture* ship1 = NULL;
 SDL_Texture* ship2 = NULL;
 SDL_Texture* ship3 = NULL;
 SDL_Texture* ship4 = NULL;
-SDL_Texture* ship5 = NULL;
+SDL_Texture* ship5 = NULL;          
 
 SDL_Rect characterRect = { 0, 0, 100, 150 };
 SDL_Rect mainMenu_rect;
@@ -818,4 +818,13 @@ void pressPauseGame(SDL_Renderer* renderer)
     pauseG_rect.w = 1280;
     pauseG_rect.h = 680;
     SDL_RenderCopy(renderer, pauseG, NULL, &pauseG_rect);
+}
+
+void selectCharacterImage(int index) {
+    if (index >= 0 && index < characterTextures.size()) {
+        // Cập nhật chỉ số của hình ảnh được chọn
+        selectedCharacterIndex = index;
+        // Cập nhật hình ảnh cho nhân vật
+        characterTexture = characterTextures[index];
+    }
 }
